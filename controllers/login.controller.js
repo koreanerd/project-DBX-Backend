@@ -24,12 +24,21 @@ admin.initializeApp({
 
 const login = async function (req, res, next) {
   const idToken = req.body.idToken;
+  const email = req.body.email;
+
+  if (!idToken || !email) {
+    res.status(400).json({
+      result: "Error",
+      message: "Both idToken and email are required",
+    });
+    return;
+  }
 
   try {
     const authenticatedUser = await getAuth().verifyIdToken(idToken);
     const user = await User.find({ email: authenticatedUser.email }).exec();
 
-    if (authenticatedUser.email !== req.body.email) {
+    if (authenticatedUser.email !== email) {
       throw new Error("Unauthorized");
     }
 
@@ -53,6 +62,8 @@ const login = async function (req, res, next) {
         result: "Error",
         message: "401 Invalid User",
       });
+
+      return;
     } else {
       next(error);
     }
