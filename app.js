@@ -1,10 +1,10 @@
+/* eslint-disable no-undef */
 require("dotenv").config();
 
 const createError = require("http-errors");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-// eslint-disable-next-line no-undef
 const url = process.env.DB_URL;
 
 const login = require("./routes/login");
@@ -13,7 +13,7 @@ const index = require("./routes/index");
 const app = express();
 
 let corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: [process.env.ALLOWED_ORIGIN],
   credentials: true,
 };
 
