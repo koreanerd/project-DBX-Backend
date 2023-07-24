@@ -9,6 +9,7 @@ const url = process.env.DB_URL;
 
 const login = require("./routes/login");
 const index = require("./routes/index");
+const categories = require("./routes/categories");
 
 const app = express();
 
@@ -25,6 +26,7 @@ mongoose.connect(url);
 
 app.use("/", index);
 app.use("/login", login);
+app.use("/categories", categories);
 
 app.use(function (req, res, next) {
   next(createError(404));
