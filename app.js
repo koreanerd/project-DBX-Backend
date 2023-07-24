@@ -1,36 +1,39 @@
+/* eslint-disable no-undef */
 require("dotenv").config();
 
 const createError = require("http-errors");
 const express = require("express");
 const mongoose = require("mongoose");
-// const __dirname = path.resolve();
-// eslint-disable-next-line no-undef
+const cors = require("cors");
 const url = process.env.DB_URL;
 
 const login = require("./routes/login");
+const index = require("./routes/index");
 
 const app = express();
 
-// view engine setup
+let corsOptions = {
+  origin: [process.env.ALLOWED_ORIGIN],
+  credentials: true,
+};
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors(corsOptions));
 
 mongoose.connect(url);
 
-app.use("/", login);
+app.use("/", index);
+app.use("/login", login);
 
-// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
 app.use(function (err, req, res) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
+  console.log("err", err);
   res.status(err.status || 500);
   res.json();
 });
