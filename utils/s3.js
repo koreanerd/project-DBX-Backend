@@ -2,7 +2,6 @@
 const {
   S3Client,
   PutObjectCommand,
-  ListBucketsCommand,
   GetObjectCommand,
 } = require("@aws-sdk/client-s3");
 const sharp = require("sharp");
@@ -20,38 +19,23 @@ const S3 = new S3Client({
   },
 });
 
-async function listOfBuckets() {
-  try {
-    const response = await S3.send(new ListBucketsCommand({}));
-    const buckets = response.Buckets;
-
-    for (let bucket of buckets) {
-      console.log(bucket);
-    }
-  } catch (error) {
-    console.log("Bucket 오류");
-  }
-}
-
 async function uploadObject(keyName, fileData, contentType) {
   const upLoadParams = {
     Bucket: bucket_name,
-    Key: keyName, // 업로드할 파일명
-    Body: fileData, // 파일 데이터
+    Key: keyName,
+    Body: fileData,
     ContentType: contentType,
-    ACL: "public-read", //public으로 보여줄지 말지에 대한 부분
+    ACL: "public-read",
   };
 
   try {
-    const responseS3 = await S3.send(new PutObjectCommand(upLoadParams));
-    console.log(responseS3);
+    await S3.send(new PutObjectCommand(upLoadParams));
   } catch (err) {
     next(err);
   }
 }
 
 async function downloadResource(keyName) {
-  console.log("작동오케이??");
   try {
     const params = {
       Bucket: bucket_name,
@@ -59,9 +43,9 @@ async function downloadResource(keyName) {
     };
 
     const data = await S3.send(new GetObjectCommand(params));
-    console.log("SVG 파일 다운로드 완료!", data);
+
+    return data;
   } catch (err) {
-    console.error("파일 다운로드 오류:", err);
     next(err);
   }
 }
