@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const resourceVersionSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true, unique: true },
   categoryId: String,
   detail: {
     version: String,
@@ -9,6 +9,7 @@ const resourceVersionSchema = new mongoose.Schema({
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
   },
   files: [

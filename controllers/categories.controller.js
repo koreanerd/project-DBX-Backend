@@ -86,6 +86,16 @@ const resource = async function (req, res, next) {
       return;
     }
 
+    if (error.message === "s3 Error") {
+      res.statusCode = 500;
+      res.json({
+        result: "error",
+        message: "500 s3 Error",
+      });
+
+      return;
+    }
+
     next(error);
   }
 };

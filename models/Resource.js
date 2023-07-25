@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const resourceSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true, unique: true },
   categoryId: String,
   currentVersion: {
     type: mongoose.Schema.Types.ObjectId,

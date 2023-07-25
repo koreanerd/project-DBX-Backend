@@ -31,7 +31,7 @@ async function uploadObject(keyName, fileData, contentType) {
   try {
     await S3.send(new PutObjectCommand(upLoadParams));
   } catch (err) {
-    next(err);
+    throw new Error("s3 Error");
   }
 }
 
@@ -51,7 +51,7 @@ async function downloadResource(keyName) {
 }
 
 async function convertImage(fileData) {
-  const convertedImage = await sharp(fileData).png().toBuffer();
+  const convertedImage = await sharp(Buffer.from(fileData)).png().toBuffer();
 
   return convertedImage;
 }
@@ -60,5 +60,4 @@ module.exports = {
   uploadObject: uploadObject,
   downloadResource: downloadResource,
   convertImage: convertImage,
-  listOfBuckets: listOfBuckets,
 };
