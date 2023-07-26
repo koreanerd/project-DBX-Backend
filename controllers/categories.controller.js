@@ -29,9 +29,7 @@ const resource = async function (req, res, next) {
       },
       files: data.files.map(el => {
         return {
-          file: {
-            fileName: el.file.fileName,
-          },
+          fileName: el.fileName,
         };
       }),
     }).save();
@@ -40,18 +38,18 @@ const resource = async function (req, res, next) {
 
     const uploadPromises = data.files.map(async (el, index) => {
       const uploadNameSVG =
-        newResourceVersionObjectId + "/" + el.file.fileName + ".svg";
+        newResourceVersionObjectId + "/" + el.fileName + ".svg";
       const uploadNamePNG =
-        newResourceVersionObjectId + "/" + el.file.fileName + ".png";
-      newResourceVersion.files[index].file.svgUrl =
+        newResourceVersionObjectId + "/" + el.fileName + ".png";
+      newResourceVersion.files[index].svgUrl =
         "https://team-dbx.s3.ap-northeast-2.amazonaws.com/" + uploadNameSVG;
-      newResourceVersion.files[index].file.pngUrl =
+      newResourceVersion.files[index].pngUrl =
         "https://team-dbx.s3.ap-northeast-2.amazonaws.com/" + uploadNamePNG;
 
-      const convertedPNG = await convertImage(el.file.svgFile);
+      const convertedPNG = await convertImage(el.svgFile);
 
       return (
-        uploadObject(uploadNameSVG, el.file.svgFile, "image/svg+xml"),
+        uploadObject(uploadNameSVG, el.svgFile, "image/svg+xml"),
         uploadObject(uploadNamePNG, convertedPNG, "image/png")
       );
     });
@@ -100,6 +98,49 @@ const resource = async function (req, res, next) {
   }
 };
 
+const resourceList = async function (req, res, next) {
+  const categoryId = req.params.categoryId;
+
+  try {
+    const categoryList = await Category.findOne({ _id: categoryId });
+    const categoryResourceList = categoryList.resources;
+
+    const findResourceList = categoryResourceList.map(resource => {
+      return Resource.findOne({ _id: resource._id });
+    });
+    const resourceList = await Promise.all(findResourceList);
+
+    const findResourceVersionList = resourceList.map(resource => {
+      const currentVersion = resource.currentVersion;
+
+      return ResourceVersion.findOne({ _id: currentVersion });
+    });
+    const resourceVersionList = await Promise.all(findResourceVersionList);
+
+    const responseList = resourceVersionList.map(resourceVersion => {
+      const id = resourceVersion._id;
+      let defaultSVGUrl;
+      const files = resourceVersion.files;
+
+      for (const file of files) {
+        if (file.fileName === "default") {
+          defaultSVGUrl = file.svgUrl;
+
+          break;
+        }
+      }
+
+      return { id: id, svgUrl: defaultSVGUrl };
+    });
+
+    res.statusCode = 200;
+    res.json({ categoryList: responseList });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   resource: resource,
+  resourceList: resourceList,
 };

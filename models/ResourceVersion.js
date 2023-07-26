@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+const fileSchema = new mongoose.Schema({
+  fileName: { type: String, required: true },
+  svgUrl: String,
+  pngUrl: String,
+});
+
 const resourceVersionSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   categoryId: String,
@@ -12,15 +18,7 @@ const resourceVersionSchema = new mongoose.Schema({
       required: true,
     },
   },
-  files: [
-    {
-      file: {
-        fileName: String,
-        svgUrl: String,
-        pngUrl: String,
-      },
-    },
-  ],
+  files: [fileSchema],
 });
 
 module.exports = mongoose.model("ResourceVersion", resourceVersionSchema);
