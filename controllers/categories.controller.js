@@ -105,32 +105,20 @@ const resourceList = async function (req, res, next) {
     const categoryList = await Category.findOne({ _id: categoryId });
     const categoryResourceList = categoryList.resources;
 
-    const findResourceList = categoryResourceList.map(resource => {
-      return Resource.findOne({ _id: resource._id });
+    const findResourceList = categoryResourceList.map(async resource => {
+      return Resource.findOne({ _id: resource._id }).populate("currentVersion");
     });
     const resourceList = await Promise.all(findResourceList);
 
-    const findResourceVersionList = resourceList.map(resource => {
-      const currentVersion = resource.currentVersion;
+    const responseList = resourceList.map(resource => {
+      const id = resource._id;
+      const { files } = resource.currentVersion;
 
-      return ResourceVersion.findOne({ _id: currentVersion });
-    });
-    const resourceVersionList = await Promise.all(findResourceVersionList);
-
-    const responseList = resourceVersionList.map(resourceVersion => {
-      const id = resourceVersion._id;
-      let defaultSVGUrl;
-      const files = resourceVersion.files;
-
-      for (const file of files) {
-        if (file.fileName === "default") {
-          defaultSVGUrl = file.svgUrl;
-
-          break;
+      for (const { fileName, svgUrl } of files) {
+        if (fileName === "default") {
+          return { id, svgUrl };
         }
       }
-
-      return { id: id, svgUrl: defaultSVGUrl };
     });
 
     res.statusCode = 200;
