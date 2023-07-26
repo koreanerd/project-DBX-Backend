@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { resource } = require("../controllers/categories.controller");
+const {
+  resource,
+  getResourceList,
+} = require("../controllers/categories.controller");
 
 router.post("/:categoryId/resource", resource);
+router.get("/:categoryId", getResourceList);
 
 module.exports = router;

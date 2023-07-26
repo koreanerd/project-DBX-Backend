@@ -5,13 +5,13 @@ const resourceSchema = new mongoose.Schema({
   categoryId: String,
   currentVersion: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "resourceVersion",
+    ref: "ResourceVersion",
   },
   versions: [
     {
       version: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "resourceVersion",
+        ref: "ResourceVersion",
       },
     },
   ],

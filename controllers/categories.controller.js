@@ -29,9 +29,7 @@ const resource = async function (req, res, next) {
       },
       files: data.files.map(el => {
         return {
-          file: {
-            fileName: el.file.fileName,
-          },
+          fileName: el.fileName,
         };
       }),
     }).save();
@@ -40,18 +38,18 @@ const resource = async function (req, res, next) {
 
     const uploadPromises = data.files.map(async (el, index) => {
       const uploadNameSVG =
-        newResourceVersionObjectId + "/" + el.file.fileName + ".svg";
+        newResourceVersionObjectId + "/" + el.fileName + ".svg";
       const uploadNamePNG =
-        newResourceVersionObjectId + "/" + el.file.fileName + ".png";
-      newResourceVersion.files[index].file.svgUrl =
+        newResourceVersionObjectId + "/" + el.fileName + ".png";
+      newResourceVersion.files[index].svgUrl =
         "https://team-dbx.s3.ap-northeast-2.amazonaws.com/" + uploadNameSVG;
-      newResourceVersion.files[index].file.pngUrl =
+      newResourceVersion.files[index].pngUrl =
         "https://team-dbx.s3.ap-northeast-2.amazonaws.com/" + uploadNamePNG;
 
-      const convertedPNG = await convertImage(el.file.svgFile);
+      const convertedPNG = await convertImage(el.svgFile);
 
       return (
-        uploadObject(uploadNameSVG, el.file.svgFile, "image/svg+xml"),
+        uploadObject(uploadNameSVG, el.svgFile, "image/svg+xml"),
         uploadObject(uploadNamePNG, convertedPNG, "image/png")
       );
     });
@@ -100,6 +98,37 @@ const resource = async function (req, res, next) {
   }
 };
 
+const getResourceList = async function (req, res, next) {
+  const categoryId = req.params.categoryId;
+
+  try {
+    const categoryList = await Category.findOne({ _id: categoryId });
+    const categoryResourceList = categoryList.resources;
+
+    const findResourceList = categoryResourceList.map(async resource => {
+      return Resource.findOne({ _id: resource._id }).populate("currentVersion");
+    });
+    const resourceList = await Promise.all(findResourceList);
+
+    const responseList = resourceList.map(resource => {
+      const id = resource._id;
+      const { files } = resource.currentVersion;
+
+      for (const { fileName, svgUrl } of files) {
+        if (fileName === "default") {
+          return { id, svgUrl };
+        }
+      }
+    });
+
+    res.statusCode = 200;
+    res.json({ categoryList: responseList });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   resource: resource,
+  getResourceList: getResourceList,
 };
