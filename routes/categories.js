@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const {
   resource,
-  resourceList,
+  getResourceList,
 } = require("../controllers/categories.controller");
 
 router.post("/:categoryId/resource", resource);
-router.get("/:categoryId", resourceList);
+router.get("/:categoryId", getResourceList);
 
 module.exports = router;

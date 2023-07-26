@@ -98,7 +98,7 @@ const resource = async function (req, res, next) {
   }
 };
 
-const resourceList = async function (req, res, next) {
+const getResourceList = async function (req, res, next) {
   const categoryId = req.params.categoryId;
 
   try {
@@ -130,5 +130,5 @@ const resourceList = async function (req, res, next) {
 
 module.exports = {
   resource: resource,
-  resourceList: resourceList,
+  getResourceList: getResourceList,
 };
