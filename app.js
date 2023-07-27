@@ -14,7 +14,7 @@ const categories = require("./routes/categories");
 
 const app = express();
 
-let corsOptions = {
+const corsOptions = {
   origin: [`${allowedOriginUrl}`],
   credentials: true,
 };
