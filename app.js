@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const url = process.env.DB_URL;
+const allowedOriginUrl = process.env.ALLLOWED_ORIGIN;
 
 const login = require("./routes/login");
 const index = require("./routes/index");
@@ -14,7 +15,7 @@ const categories = require("./routes/categories");
 const app = express();
 
 let corsOptions = {
-  origin: [process.env.ALLOWED_ORIGIN],
+  origin: [`${allowedOriginUrl}`],
   credentials: true,
 };
 
