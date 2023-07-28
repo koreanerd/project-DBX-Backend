@@ -2,12 +2,12 @@ const postResourceController = require("./categoriesControllers/postResource.con
 const getResourceListController = require("./categoriesControllers/getResourceList.controller");
 const getResourceController = require("./categoriesControllers/getResource.controller");
 
-const postResource = postResourceController;
-const getResourceList = getResourceListController;
-const getResource = getResourceController;
+const resource = postResourceController;
+const categoryList = getResourceListController;
+const resourceDetail = getResourceController;
 
 module.exports = {
-  postResource: postResource,
-  getResourceList: getResourceList,
-  getResource: getResource,
+  categoryList,
+  resource,
+  resourceDetail,
 };
