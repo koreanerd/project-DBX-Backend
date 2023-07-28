@@ -22,7 +22,7 @@ const postResourceController = async function (req, res, next) {
       name: data.name,
       categoryId: categoryId,
       detail: {
-        version: "1.0,0", // 어처피 첫 생성이니까 1.0.0으로 고정해야 맞다.
+        version: "1.0,0",
         uploadDate: data.detail.uploadDate,
         author: user._id,
       },
