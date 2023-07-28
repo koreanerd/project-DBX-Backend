@@ -7,7 +7,6 @@ const fileSchema = new mongoose.Schema({
 });
 
 const resourceVersionSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
   categoryId: String,
   detail: {
     version: String,
@@ -17,6 +16,7 @@ const resourceVersionSchema = new mongoose.Schema({
       ref: "User",
       required: true,
     },
+    description: String,
   },
   files: [fileSchema],
 });

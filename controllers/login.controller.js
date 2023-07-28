@@ -35,6 +35,7 @@ const login = async function (req, res, next) {
   }
 
   try {
+    const userCount = await User.countDocuments();
     const authenticatedUser = await getAuth().verifyIdToken(idToken);
     const user = await User.find({ email: authenticatedUser.email }).exec();
 
@@ -48,6 +49,17 @@ const login = async function (req, res, next) {
         name: authenticatedUser.name,
         isAdmin: true,
       }).save();
+    }
+
+    if (!userCount) {
+      res.json({
+        result: "OK",
+        isInitialUser: true,
+        isUser: true,
+        isAdmin: user.length ? user[0].isAdmin : true,
+      });
+
+      return;
     }
 
     res.json({
