@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const {
+  categoryList,
   resource,
-  getResourceList,
+  resourceDetail,
 } = require("../controllers/categories.controller");
 
+router.get("/:categoryId", categoryList);
 router.post("/:categoryId/resource", resource);
-router.get("/:categoryId", getResourceList);
+router.get("/:categoryId/resources/:resourceId", resourceDetail);
 
 module.exports = router;
