@@ -7,6 +7,7 @@ const fileSchema = new mongoose.Schema({
 });
 
 const resourceVersionSchema = new mongoose.Schema({
+  name: String,
   categoryId: String,
   detail: {
     version: String,
