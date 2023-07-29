@@ -9,13 +9,13 @@ const initialSetting = async function (req, res, next) {
       }).save();
     });
 
-    const temp = await Promise.all(newCategoryList);
+    const categoryList = await Promise.all(newCategoryList);
 
     res.statusCode = 201;
-    res.json(temp);
+    res.json(categoryList);
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = initialSetting;
+module.exports = { initialSetting };

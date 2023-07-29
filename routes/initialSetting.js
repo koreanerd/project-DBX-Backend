@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const initializeApp = require("../controllers/initialSetting.controller");
+const { initialSetting } = require("../controllers/initialSetting.controller");
 
-router.post("/", initializeApp);
+router.post("/", initialSetting);
 module.exports = router;
