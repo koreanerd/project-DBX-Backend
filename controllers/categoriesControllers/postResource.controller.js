@@ -22,7 +22,7 @@ const postResourceController = async function (req, res, next) {
       name: data.name,
       categoryId: categoryId,
       detail: {
-        version: "1.0,0",
+        version: "1.0.0",
         uploadDate: data.detail.uploadDate,
         author: user._id,
       },
@@ -53,8 +53,7 @@ const postResourceController = async function (req, res, next) {
       );
     });
 
-    newResourceVersion.save();
-
+    await newResourceVersion.save();
     await Promise.all(uploadPromises);
 
     const newResource = await new Resource({
@@ -67,7 +66,7 @@ const postResourceController = async function (req, res, next) {
     newResource.save();
 
     const category = await Category.findOne({ _id: categoryId });
-    category.resources.push(newResource._id);
+    category?.resources.push(newResource._id);
     category.save();
 
     res.statusCode = 201;

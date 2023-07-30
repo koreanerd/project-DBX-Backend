@@ -47,13 +47,13 @@ const postResourceVersion = async function (req, res, next) {
           newResourceVersionObjectId + "/" + el.fileName + ".svg";
         const uploadNamePNG =
           newResourceVersionObjectId + "/" + el.fileName + ".png";
-        const convertedPNG = await convertImage(el.svgFile);
 
         newResourceVersion.files[index].svgUrl =
           "https://team-dbx.s3.ap-northeast-2.amazonaws.com/" + uploadNameSVG;
         newResourceVersion.files[index].pngUrl =
           "https://team-dbx.s3.ap-northeast-2.amazonaws.com/" + uploadNamePNG;
 
+        const convertedPNG = await convertImage(el.svgFile);
         return (
           uploadObject(uploadNameSVG, el.svgFile, "image/svg+xml"),
           uploadObject(uploadNamePNG, convertedPNG, "image/png")
@@ -61,7 +61,6 @@ const postResourceVersion = async function (req, res, next) {
       });
 
       await newResourceVersion.save();
-
       await Promise.all(uploadPromises);
 
       res.statusCode = 201;
@@ -86,6 +85,8 @@ const postResourceVersion = async function (req, res, next) {
         result: "error",
         message: "409 ResourceVersions Exists",
       });
+
+      return;
     }
 
     next(error);
