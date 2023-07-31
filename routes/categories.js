@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  category,
   categoryList,
   newResource,
   resource,
@@ -8,6 +9,7 @@ const {
   resourceVersions,
 } = require("../controllers/categories.controller");
 
+router.get("/", category);
 router.get("/:categoryId", categoryList);
 router.post("/:categoryId/resource", newResource);
 router.get("/:categoryId/resources/:resourceId", resource);
