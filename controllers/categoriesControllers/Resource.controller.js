@@ -1,6 +1,6 @@
 const Resource = require("../../models/Resource");
 
-const getResourceController = async function (req, res, next) {
+const resourceController = async function (req, res, next) {
   const resourceId = req.params.resourceId;
 
   try {
@@ -28,4 +28,4 @@ const getResourceController = async function (req, res, next) {
   }
 };
 
-module.exports = getResourceController;
+module.exports = resourceController;

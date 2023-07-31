@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 const {
   categoryList,
+  newResource,
   resource,
-  resourceDetail,
-  version,
+  newResourceVersion,
   resourceVersions,
 } = require("../controllers/categories.controller");
 
 router.get("/:categoryId", categoryList);
-router.post("/:categoryId/resource", resource);
-router.get("/:categoryId/resources/:resourceId", resourceDetail);
-router.post("/:categoryId/resources/:resourceId/version", version);
+router.post("/:categoryId/resource", newResource);
+router.get("/:categoryId/resources/:resourceId", resource);
+router.post("/:categoryId/resources/:resourceId/version", newResourceVersion);
 router.get("/:categoryId/resources/:resourceId/versions", resourceVersions);
 
 module.exports = router;
