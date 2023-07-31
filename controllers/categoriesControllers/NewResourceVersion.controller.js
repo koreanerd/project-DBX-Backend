@@ -3,7 +3,7 @@ const ResourceVersion = require("../../models/ResourceVersion");
 const User = require("../../models/User");
 const { convertImage, uploadObject } = require("../../utils/s3");
 
-const postResourceVersion = async function (req, res, next) {
+const newResourceVersion = async function (req, res, next) {
   const resourceId = req.params.resourceId;
   const data = req.body;
 
@@ -93,4 +93,4 @@ const postResourceVersion = async function (req, res, next) {
   }
 };
 
-module.exports = postResourceVersion;
+module.exports = newResourceVersion;

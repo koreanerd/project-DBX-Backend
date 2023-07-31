@@ -25,7 +25,6 @@ async function uploadObject(keyName, fileData, contentType) {
     Key: keyName,
     Body: fileData,
     ContentType: contentType,
-    ACL: "public-read",
   };
 
   try {

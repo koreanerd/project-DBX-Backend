@@ -1,19 +1,19 @@
-const postResourceController = require("./categoriesControllers/postResource.controller");
-const getResourceListController = require("./categoriesControllers/getResourceList.controller");
-const getResourceController = require("./categoriesControllers/getResource.controller");
-const postResourceVersionController = require("./categoriesControllers/postResourceVersion.controller");
-const getResourceVersionController = require("./categoriesControllers/getResourceVersions.controller");
+const NewResourceController = require("./categoriesControllers/NewResource.controller");
+const ResourceListController = require("./categoriesControllers/CategoryResourceList.controller");
+const ResourceController = require("./categoriesControllers/Resource.controller");
+const NewResourceVersionController = require("./categoriesControllers/NewResourceVersion.controller");
+const ResourceVersionController = require("./categoriesControllers/ResourceVersions.controller");
 
-const resource = postResourceController;
-const categoryList = getResourceListController;
-const resourceDetail = getResourceController;
-const version = postResourceVersionController;
-const resourceVersions = getResourceVersionController;
+const newResource = NewResourceController;
+const categoryList = ResourceListController;
+const resource = ResourceController;
+const newResourceVersion = NewResourceVersionController;
+const resourceVersions = ResourceVersionController;
 
 module.exports = {
   categoryList,
+  newResource,
   resource,
-  resourceDetail,
-  version,
+  newResourceVersion,
   resourceVersions,
 };

@@ -4,7 +4,7 @@ const Resource = require("../../models/Resource");
 const User = require("../../models/User");
 const Category = require("../../models/Category");
 
-const postResourceController = async function (req, res, next) {
+const newResourceController = async function (req, res, next) {
   const data = req.body;
   const categoryId = req.params.categoryId;
 
@@ -96,4 +96,4 @@ const postResourceController = async function (req, res, next) {
   }
 };
 
-module.exports = postResourceController;
+module.exports = newResourceController;

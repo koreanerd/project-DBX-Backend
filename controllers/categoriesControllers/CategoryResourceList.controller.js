@@ -1,7 +1,7 @@
 const Resource = require("../../models/Resource");
 const Category = require("../../models/Category");
 
-const getResourceListController = async function (req, res, next) {
+const categoryResourceListController = async function (req, res, next) {
   const categoryId = req.params.categoryId;
 
   try {
@@ -31,4 +31,4 @@ const getResourceListController = async function (req, res, next) {
   }
 };
 
-module.exports = getResourceListController;
+module.exports = categoryResourceListController;
