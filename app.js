@@ -11,6 +11,7 @@ const allowedOriginUrl = process.env.ALLOWED_ORIGIN;
 const login = require("./routes/login");
 const initialSetting = require("./routes/initialSetting");
 const categories = require("./routes/categories");
+const providedUrl = require("./routes/providedUrl");
 
 const app = express();
 
@@ -28,6 +29,7 @@ mongoose.connect(url);
 app.use("/initialSetting", initialSetting);
 app.use("/login", login);
 app.use("/categories", categories);
+app.use("/dbx", providedUrl);
 
 app.use(function (req, res, next) {
   next(createError(404));
