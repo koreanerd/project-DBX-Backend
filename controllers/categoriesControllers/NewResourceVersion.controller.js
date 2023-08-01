@@ -21,7 +21,7 @@ const newResourceVersion = async function (req, res, next) {
 
     const newResourceVersion = await new ResourceVersion({
       categoryId: data.categoryId,
-      name: data.name,
+      name: resource.name,
       detail: {
         version: data.detail.version,
         uploadDate: data.detail.uploadDate,
