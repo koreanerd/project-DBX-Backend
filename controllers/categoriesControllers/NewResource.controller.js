@@ -25,6 +25,7 @@ const newResourceController = async function (req, res, next) {
         version: "1.0.0",
         uploadDate: data.detail.uploadDate,
         author: user._id,
+        description: data.detail.description,
       },
       files: data.files.map(el => {
         return {
