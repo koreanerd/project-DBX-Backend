@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/*eslint-disable no-undef */
 const { getAuth } = require("firebase-admin/auth");
 const admin = require("firebase-admin");
 const User = require("../models/User");

@@ -27,7 +27,7 @@ const newResourceController = async function (req, res, next) {
         author: user._id,
         description: data.detail.description,
       },
-      files: data.files.map(el => {
+      files: data.files.map((el) => {
         return {
           fileName: el.fileName,
         };

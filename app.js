@@ -1,38 +1,28 @@
-/* eslint-disable no-undef */
 require("dotenv").config();
-
-const createError = require("http-errors");
+require("./src/configs/firebaseAdmin");
 const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const url = process.env.DB_URL;
-const allowedOriginUrl = process.env.ALLOWED_ORIGIN;
-
-const login = require("./routes/login");
-const initialSetting = require("./routes/initialSetting");
-const categories = require("./routes/categories");
-const providedUrl = require("./routes/providedUrl");
-
+const logger = require("morgan");
+const userRouter = require("./src/routes/user");
+const initialSetting = require("./src/routes/initialSetting");
+const categories = require("./src/routes/categories");
+const providedUrl = require("./src/routes/providedUrl");
+const connectDatabase = require("./src/configs/database");
+const corsMiddleware = require("./src/middlewares/cors");
 const app = express();
 
-const corsOptions = {
-  origin: [`${allowedOriginUrl}`],
-  credentials: true,
-};
+connectDatabase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors(corsOptions));
-
-mongoose.connect(url);
-
+app.use(corsMiddleware);
+app.use(logger("dev"));
 app.use("/initialSetting", initialSetting);
-app.use("/login", login);
+app.use("/api/v1/user", userRouter);
 app.use("/categories", categories);
 app.use("/dbx", providedUrl);
 
-app.use(function (req, res, next) {
-  next(createError(404));
+app.use((req, res) => {
+  res.status(404).send("Not Found");
 });
 
 app.use(function (err, req, res) {

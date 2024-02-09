@@ -3,7 +3,7 @@ const Category = require("../models/Category");
 const initialSetting = async function (req, res, next) {
   const categories = ["BrandLogo", "KeyImage", "Icon"];
   try {
-    const newCategoryList = categories.map(el => {
+    const newCategoryList = categories.map((el) => {
       return new Category({
         name: el,
       }).save();

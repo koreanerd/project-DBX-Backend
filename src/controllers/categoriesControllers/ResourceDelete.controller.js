@@ -9,16 +9,16 @@ const resourceDeleteController = async function (req, res, next) {
   try {
     const currentCategoryResource = await Category.findOne({ _id: categoryId });
     currentCategoryResource.resources = currentCategoryResource.resources.map(
-      el => {
+      (el) => {
         if (el !== resourceId) {
           return el;
         }
-      }
+      },
     );
     await currentCategoryResource.save();
 
     const resource = await Resource.findOne({ _id: resourceId });
-    const deleteResourceVersions = resource.versions.map(el => {
+    const deleteResourceVersions = resource.versions.map((el) => {
       return ResourceVersions.findByIdAndDelete({ _id: el._id });
     });
     await Promise.all(deleteResourceVersions);

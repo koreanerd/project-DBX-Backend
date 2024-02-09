@@ -6,7 +6,7 @@ const resourceVersions = async function (req, res, next) {
   try {
     const resource = await Resource.findOne({ _id: resourceId });
 
-    const promiseResourceVersions = resource.versions.map(version => {
+    const promiseResourceVersions = resource.versions.map((version) => {
       return ResourceVersion.findOne({ _id: version._id });
     });
     const versionList = await Promise.all(promiseResourceVersions);
