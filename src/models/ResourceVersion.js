@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const fileSchema = new mongoose.Schema({
-  fileName: { type: String, required: true },
+  option: { type: String, required: true },
+  svgContent: { type: String, required: true },
   svgUrl: String,
   pngUrl: String,
 });
@@ -9,7 +10,7 @@ const fileSchema = new mongoose.Schema({
 const resourceVersionSchema = new mongoose.Schema({
   name: String,
   categoryId: String,
-  detail: {
+  details: {
     version: String,
     uploadDate: Date,
     author: {

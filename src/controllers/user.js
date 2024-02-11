@@ -1,19 +1,117 @@
 const User = require("../models/User");
+const Category = require("../models/Category");
+const ResourceVersion = require("../models/ResourceVersion");
+const Resource = require("../models/Resource");
 
-const getUserInformation = async (req, res) => {
+const getMyInformation = async (req, res) => {
   const uid = req.user.uid;
 
   try {
-    const userInfo = await User.findOne({ uid });
+    const myInfo = await User.findOne({ uid });
 
-    if (!userInfo) {
+    if (!myInfo) {
       return res.status(404).json({
         status: "Error",
         message: "User not found",
       });
     }
 
-    res.status(200).json(userInfo);
+    res.status(200).json(myInfo);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      status: "Error",
+      message: "Server encountered an error processing the request.",
+    });
+  }
+};
+
+const initialRegistration = async (req, res) => {
+  if (!req.user.isInitialUser) {
+    res.status(403).json({ status: "Error", message: "Not initial user." });
+
+    return;
+  }
+
+  const data = req.body.data;
+
+  const isDefault = data.files.find((file) => file.option === "default");
+
+  if (!isDefault) {
+    res.status(400).json({
+      status: "Error",
+      message: "You must register the 'Default' image.",
+    });
+
+    return;
+  }
+
+  const categories = ["Brand Logo", "Key Image", "Icon"];
+
+  try {
+    const categoryList = await Promise.all(
+      categories.map(async (categoryName) => {
+        const category = await new Category({ name: categoryName }).save();
+
+        return category;
+      }),
+    );
+
+    const brandLogoCategoryId = categoryList.find(
+      (category) => category.name === "Brand Logo",
+    )?._id;
+
+    const categoriesWithIds = categoryList.map((category) => ({
+      name: category.name,
+      id: category._id,
+    }));
+
+    await User.findByIdAndUpdate(req.user._id, {
+      categoryIds: categoriesWithIds,
+    });
+
+    const createResourceVersion = new ResourceVersion({
+      name: data.name,
+      categoryId: brandLogoCategoryId,
+      details: {
+        version: "1.0.0",
+        uploadDate: data.details.uploadDate,
+        author: req.user._id,
+        description: data.details.description,
+      },
+      files: data.files.map((file) => {
+        return {
+          option: file.option,
+          svgContent: file.svgContent,
+        };
+      }),
+    });
+
+    await createResourceVersion.save();
+
+    const createResource = new Resource({
+      name: data.name,
+      categoryId: brandLogoCategoryId,
+      currentVersion: createResourceVersion._id,
+    });
+
+    createResource.versions.push(createResourceVersion._id);
+
+    await createResource.save();
+
+    await Category.findByIdAndUpdate(brandLogoCategoryId, {
+      resources: createResource._id,
+    });
+
+    await User.findByIdAndUpdate(req.user._id, {
+      isInitialUser: false,
+    });
+
+    res.status(200).json({
+      status: "Success",
+      message: "Initial setup has been completed correctly..",
+    });
   } catch (error) {
     console.error(error);
 
@@ -25,5 +123,6 @@ const getUserInformation = async (req, res) => {
 };
 
 module.exports = {
-  getUserInformation,
+  getMyInformation,
+  initialRegistration,
 };

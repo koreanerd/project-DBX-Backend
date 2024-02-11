@@ -3,7 +3,6 @@ require("./src/configs/firebaseAdmin");
 const express = require("express");
 const logger = require("morgan");
 const userRouter = require("./src/routes/user");
-const initialSetting = require("./src/routes/initialSetting");
 const categories = require("./src/routes/categories");
 const providedUrl = require("./src/routes/providedUrl");
 const connectDatabase = require("./src/configs/database");
@@ -16,8 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
 app.use(logger("dev"));
-app.use("/initialSetting", initialSetting);
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/categories", categories);
 app.use("/dbx", providedUrl);
 

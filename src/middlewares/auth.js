@@ -11,10 +11,11 @@ module.exports.verifyToken = async (req, res, next) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const { email, name, uid } = decodedToken;
 
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ uid });
 
     if (!user) {
-      user = new User({ email, name, uid });
+      user = new User({ email, name, uid, isInitialUser: true });
+
       await user.save();
     }
 
