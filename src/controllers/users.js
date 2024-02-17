@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Category = require("../models/Category");
 const ResourceVersion = require("../models/ResourceVersion");
 const Resource = require("../models/Resource");
+const { uploadS3bucket } = require("../utils/s3");
 
 const getMyInformation = async (req, res) => {
   const uid = req.user.uid;
@@ -88,7 +89,16 @@ const initialRegistration = async (req, res) => {
       }),
     });
 
+    const versionId = createResourceVersion._id.toString();
+
+    const fileUploadPromises = await uploadS3bucket(
+      createResourceVersion,
+      versionId,
+      data,
+    );
+
     await createResourceVersion.save();
+    await Promise.all(fileUploadPromises);
 
     const createResource = new Resource({
       name: data.name,
@@ -97,12 +107,18 @@ const initialRegistration = async (req, res) => {
     });
 
     createResource.versions.push(createResourceVersion._id);
-
     await createResource.save();
 
-    await Category.findByIdAndUpdate(brandLogoCategoryId, {
-      resources: createResource._id,
-    });
+    const category = await Category.findById(brandLogoCategoryId);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ status: "Error", message: "Category not found." });
+    }
+
+    category.resources.push(createResource._id);
+    await category.save();
 
     await User.findByIdAndUpdate(req.user._id, {
       isInitialUser: false,
@@ -110,7 +126,8 @@ const initialRegistration = async (req, res) => {
 
     res.status(200).json({
       status: "Success",
-      message: "Initial setup has been completed correctly..",
+      message: "Initial setup has been completed correctly.",
+      categoryIds: categoriesWithIds,
     });
   } catch (error) {
     console.error(error);

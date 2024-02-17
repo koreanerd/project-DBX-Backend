@@ -5,7 +5,7 @@ const { authUser } = require("../controllers/authUser");
 const {
   getMyInformation,
   initialRegistration,
-} = require("../controllers/user");
+} = require("../controllers/users");
 
 router.route("/auth-user").post(verifyToken, authUser);
 

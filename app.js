@@ -2,8 +2,8 @@ require("dotenv").config();
 require("./src/configs/firebaseAdmin");
 const express = require("express");
 const logger = require("morgan");
-const userRouter = require("./src/routes/user");
-const categories = require("./src/routes/categories");
+const usersRouter = require("./src/routes/users");
+const categoriesRouter = require("./src/routes/categories");
 const providedUrl = require("./src/routes/providedUrl");
 const connectDatabase = require("./src/configs/database");
 const corsMiddleware = require("./src/middlewares/cors");
@@ -15,8 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
 app.use(logger("dev"));
-app.use("/api/v1/users", userRouter);
-app.use("/categories", categories);
+app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/categories", categoriesRouter);
 app.use("/dbx", providedUrl);
 
 app.use((req, res) => {

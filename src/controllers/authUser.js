@@ -6,6 +6,7 @@ module.exports.authUser = async (req, res) => {
       name: req.user.name,
       uid: req.user.uid,
       isInitialUser: req.user.isInitialUser,
+      categoryIds: req.user.categoryIds,
     },
   });
 };

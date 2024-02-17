@@ -1,4 +1,3 @@
-/*eslint-disable no-undef */
 const {
   S3Client,
   PutObjectCommand,
@@ -6,22 +5,19 @@ const {
 } = require("@aws-sdk/client-s3");
 const sharp = require("sharp");
 
-const region = "ap-northeast-2";
-const access_key = process.env.S3_ACCESS_KEY_ID;
-const secret_key = process.env.S3_SECRET_ACCESS_KEY;
-const bucket_name = "team-dbx";
+const region = process.env.AWS_REGION;
 
 const S3 = new S3Client({
   region,
   credentials: {
-    accessKeyId: access_key,
-    secretAccessKey: secret_key,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 });
 
-async function uploadObject(keyName, fileData, contentType) {
+const uploadObject = async (keyName, fileData, contentType) => {
   const upLoadParams = {
-    Bucket: bucket_name,
+    Bucket: process.env.AWS_BUCKET_NAME,
     Key: keyName,
     Body: fileData,
     ContentType: contentType,
@@ -29,34 +25,67 @@ async function uploadObject(keyName, fileData, contentType) {
 
   try {
     await S3.send(new PutObjectCommand(upLoadParams));
-  } catch (err) {
-    throw new Error("s3 Error");
+  } catch (error) {
+    throw new Error(error.message);
   }
-}
+};
 
-async function downloadResource(keyName) {
+const downloadResource = async (keyName) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: keyName,
+  };
+
   try {
-    const params = {
-      Bucket: bucket_name,
-      Key: keyName,
-    };
+    const url = await S3.send(new GetObjectCommand(params));
 
-    const data = await S3.send(new GetObjectCommand(params));
-
-    return data;
-  } catch (err) {
-    next(err);
+    return url;
+  } catch (error) {
+    throw new Error(error.message);
   }
-}
+};
 
-async function convertImage(fileData) {
+const convertImage = async (fileData) => {
   const convertedImage = await sharp(Buffer.from(fileData)).png().toBuffer();
 
   return convertedImage;
-}
+};
+
+const generateFilePath = (id, option, fileExtension) => {
+  const path = `${id}/${option}.${fileExtension}`;
+
+  return path;
+};
+
+const uploadS3bucket = async (versionCreation, versionId, data) => {
+  const fileUploadPromises = [];
+
+  for (const [index, file] of data.files.entries()) {
+    const svgPath = generateFilePath(versionId, file.option, "svg");
+    const pngPath = generateFilePath(versionId, file.option, "png");
+
+    versionCreation.files[
+      index
+    ].svgUrl = `${process.env.AWS_BUCKET_URL}${svgPath}`;
+    versionCreation.files[
+      index
+    ].pngUrl = `${process.env.AWS_BUCKET_URL}${pngPath}`;
+
+    const svgFile = file.svgContent;
+    const convertToPng = await convertImage(file.svgContent);
+
+    const svgUploadPromise = uploadObject(svgPath, svgFile, "image/svg+xml");
+    const pngUploadPromise = uploadObject(pngPath, convertToPng, "image/png");
+
+    fileUploadPromises.push(svgUploadPromise, pngUploadPromise);
+  }
+
+  return fileUploadPromises;
+};
 
 module.exports = {
-  uploadObject: uploadObject,
-  downloadResource: downloadResource,
-  convertImage: convertImage,
+  uploadObject,
+  downloadResource,
+  convertImage,
+  uploadS3bucket,
 };
