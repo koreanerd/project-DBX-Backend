@@ -3,22 +3,23 @@ module.exports = {
     browser: true,
     commonjs: true,
     es2021: true,
+    node: true,
   },
-  extends: "eslint:recommended",
+  extends: ["eslint:recommended", "plugin:prettier/recommended", "prettier"],
   overrides: [
     {
-      env: {
-        node: true,
-      },
       files: [".eslintrc.{js,cjs}"],
       parserOptions: {
-        ecmaVersion: 6,
         sourceType: "script",
       },
     },
   ],
   parserOptions: {
-    ecmaVersion: "latest",
+    ecmaVersion: 2021,
   },
-  rules: {},
+  rules: {
+    "prettier/prettier": "error",
+    "no-inline-comments": "error",
+    "spaced-comment": ["error", "never"],
+  },
 };
