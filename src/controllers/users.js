@@ -128,6 +128,7 @@ const initialRegistration = async (req, res) => {
       status: "Success",
       message: "Initial setup has been completed correctly.",
       categoryIds: categoriesWithIds,
+      name: req.user.name,
     });
   } catch (error) {
     console.error(error);

@@ -11,7 +11,7 @@ const {
   addResource,
 } = require("../controllers/categories");
 
-router.route("/:categoryId/resource-list").get(verifyToken, getResourceList);
+router.route("/:categoryId/resources").get(verifyToken, getResourceList);
 
 router
   .route("/:categoryId/resources/:resourceId")
