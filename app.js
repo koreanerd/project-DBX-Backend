@@ -5,7 +5,7 @@ const logger = require("morgan");
 const usersRouter = require("./src/routes/users");
 const categoriesRouter = require("./src/routes/categories");
 const healthCheckRouter = require("./src/routes/healthCheck");
-const providedUrl = require("./src/routes/providedUrl");
+const dbxServicesRouter = require("./src/routes/dbxServices");
 const connectDatabase = require("./src/configs/database");
 const corsMiddleware = require("./src/middlewares/cors");
 const app = express();
@@ -18,7 +18,7 @@ app.use(corsMiddleware);
 app.use(logger("dev"));
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/categories", categoriesRouter);
-app.use("/dbx", providedUrl);
+app.use("/api/v1/dbx/services", dbxServicesRouter);
 app.use("/api/v1/health", healthCheckRouter);
 
 app.use((req, res) => {
